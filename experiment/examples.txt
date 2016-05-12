@@ -1,0 +1,4 @@
+gst-launch -v rtpbin name=rtpbin audiotestsrc ! audioconvert ! mulawenc ! rtppcmupay ! rtpbin.send_rtp_sink_1 rtpbin.send_rtp_src_1 ! udpsink port=5002 rtpbin.send_rtcp_src_1 ! udpsink port=5003 sync=false async=false udpsrc port=5007 ! rtpbin.recv_rtcp_sink_1 
+
+
+gst-launch -v rtpbin name=rtpbin udpsrc caps="application/x-rtp,media=(string)audio,clock-rate=(int)8000,encoding-params=(string)1,octet-align=(string)1" port=5002 ! rtpbin.recv_rtp_sink_1 rtpbin. ! rtppcmudepay ! mulawdec ! osxaudiosink udpsrc port=5003 ! rtpbin.recv_rtcp_sink_1 rtpbin.send_rtcp_src_1 ! udpsink port=5007 sync=false async=false
