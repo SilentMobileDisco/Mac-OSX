@@ -47,8 +47,8 @@
  */
 
 /* change this to send the RTP data and RTCP to another host */
-#define DEST_HOST "127.0.0.1"
-// #define DEST_HOST "224.1.1.1"
+// #define DEST_HOST "127.0.0.1"
+#define DEST_HOST "239.255.42.99"
 
 /* #define AUDIO_SRC  "alsasrc" */
 #define AUDIO_SRC  "audiotestsrc"

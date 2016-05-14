@@ -55,7 +55,7 @@
  * from another machine, change this address. */
 #define DEST_HOST "127.0.0.1"
 
-#define MULTICAST_ADDR "224.1.1.1"
+#define MULTICAST_ADDR "239.255.42.99"
 
 /* print the stats of a source */
 static void
@@ -150,8 +150,10 @@ main (int argc, char *argv[])
   /* we need to set caps on the udpsrc for the RTP data */
   caps = gst_caps_from_string (AUDIO_CAPS);
   g_object_set (rtpsrc, "caps", caps, NULL);
-  g_object_set (rtpsrc, "sync ", TRUE, NULL);
-  // g_object_set (rtpsrc, "address", MULTICAST_ADDR, NULL);
+  
+  /* Multicast flags */
+  g_object_set (rtpsrc, "address", MULTICAST_ADDR, NULL);
+  g_object_set (rtpsrc, "auto-multicast", TRUE, NULL);
 
   gst_caps_unref (caps);
 
