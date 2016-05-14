@@ -27,7 +27,7 @@ AELEM=audiotestsrc
 
 # PCMA encode from an the source
 ASOURCE="$AELEM ! audioconvert"
-ASOURCE="filesrc location=/Users/oberkowitz/FlyingBirds.mp3 ! mpegaudioparse ! mad ! audioconvert ! audioresample"
+ASOURCE="filesrc location=/Users/oberkowitz/Lofticries.mp3 ! mpegaudioparse ! mad ! audioconvert ! audioresample"
 
 
 AENC="alawenc ! rtppcmapay"
