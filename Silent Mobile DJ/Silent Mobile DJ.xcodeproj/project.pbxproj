@@ -1,0 +1,294 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		FFE1FD471CE80AE800082F2E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = FFE1FD461CE80AE800082F2E /* AppDelegate.m */; };
+		FFE1FD4A1CE80AE800082F2E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = FFE1FD491CE80AE800082F2E /* main.m */; };
+		FFE1FD4D1CE80AE800082F2E /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FFE1FD4C1CE80AE800082F2E /* ViewController.m */; };
+		FFE1FD4F1CE80AE800082F2E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FFE1FD4E1CE80AE800082F2E /* Assets.xcassets */; };
+		FFE1FD521CE80AE800082F2E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FFE1FD501CE80AE800082F2E /* Main.storyboard */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		FFE1FD421CE80AE800082F2E /* Silent Mobile DJ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Silent Mobile DJ.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		FFE1FD451CE80AE800082F2E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		FFE1FD461CE80AE800082F2E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		FFE1FD491CE80AE800082F2E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		FFE1FD4B1CE80AE800082F2E /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		FFE1FD4C1CE80AE800082F2E /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		FFE1FD4E1CE80AE800082F2E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		FFE1FD511CE80AE800082F2E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		FFE1FD531CE80AE800082F2E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		FFE1FD3F1CE80AE800082F2E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FFE1FD391CE80AE800082F2E = {
+			isa = PBXGroup;
+			children = (
+				FFE1FD441CE80AE800082F2E /* Silent Mobile DJ */,
+				FFE1FD431CE80AE800082F2E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FFE1FD431CE80AE800082F2E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				FFE1FD421CE80AE800082F2E /* Silent Mobile DJ.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		FFE1FD441CE80AE800082F2E /* Silent Mobile DJ */ = {
+			isa = PBXGroup;
+			children = (
+				FFE1FD451CE80AE800082F2E /* AppDelegate.h */,
+				FFE1FD461CE80AE800082F2E /* AppDelegate.m */,
+				FFE1FD4B1CE80AE800082F2E /* ViewController.h */,
+				FFE1FD4C1CE80AE800082F2E /* ViewController.m */,
+				FFE1FD4E1CE80AE800082F2E /* Assets.xcassets */,
+				FFE1FD501CE80AE800082F2E /* Main.storyboard */,
+				FFE1FD531CE80AE800082F2E /* Info.plist */,
+				FFE1FD481CE80AE800082F2E /* Supporting Files */,
+			);
+			path = "Silent Mobile DJ";
+			sourceTree = "<group>";
+		};
+		FFE1FD481CE80AE800082F2E /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				FFE1FD491CE80AE800082F2E /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		FFE1FD411CE80AE800082F2E /* Silent Mobile DJ */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FFE1FD561CE80AE800082F2E /* Build configuration list for PBXNativeTarget "Silent Mobile DJ" */;
+			buildPhases = (
+				FFE1FD3E1CE80AE800082F2E /* Sources */,
+				FFE1FD3F1CE80AE800082F2E /* Frameworks */,
+				FFE1FD401CE80AE800082F2E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Silent Mobile DJ";
+			productName = "Silent Mobile DJ";
+			productReference = FFE1FD421CE80AE800082F2E /* Silent Mobile DJ.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		FFE1FD3A1CE80AE800082F2E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0720;
+				ORGANIZATIONNAME = "Oren Berkowitz";
+				TargetAttributes = {
+					FFE1FD411CE80AE800082F2E = {
+						CreatedOnToolsVersion = 7.2;
+					};
+				};
+			};
+			buildConfigurationList = FFE1FD3D1CE80AE800082F2E /* Build configuration list for PBXProject "Silent Mobile DJ" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = FFE1FD391CE80AE800082F2E;
+			productRefGroup = FFE1FD431CE80AE800082F2E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				FFE1FD411CE80AE800082F2E /* Silent Mobile DJ */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		FFE1FD401CE80AE800082F2E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FFE1FD4F1CE80AE800082F2E /* Assets.xcassets in Resources */,
+				FFE1FD521CE80AE800082F2E /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		FFE1FD3E1CE80AE800082F2E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FFE1FD4D1CE80AE800082F2E /* ViewController.m in Sources */,
+				FFE1FD4A1CE80AE800082F2E /* main.m in Sources */,
+				FFE1FD471CE80AE800082F2E /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		FFE1FD501CE80AE800082F2E /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				FFE1FD511CE80AE800082F2E /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		FFE1FD541CE80AE800082F2E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		FFE1FD551CE80AE800082F2E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		FFE1FD571CE80AE800082F2E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Silent Mobile DJ/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "Silent-Mobile-Disco.Silent-Mobile-DJ";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		FFE1FD581CE80AE800082F2E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = "Silent Mobile DJ/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "Silent-Mobile-Disco.Silent-Mobile-DJ";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FFE1FD3D1CE80AE800082F2E /* Build configuration list for PBXProject "Silent Mobile DJ" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FFE1FD541CE80AE800082F2E /* Debug */,
+				FFE1FD551CE80AE800082F2E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FFE1FD561CE80AE800082F2E /* Build configuration list for PBXNativeTarget "Silent Mobile DJ" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FFE1FD571CE80AE800082F2E /* Debug */,
+				FFE1FD581CE80AE800082F2E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = FFE1FD3A1CE80AE800082F2E /* Project object */;
+}
