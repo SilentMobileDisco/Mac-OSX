@@ -2,3 +2,9 @@ gst-launch -v rtpbin name=rtpbin audiotestsrc ! audioconvert ! mulawenc ! rtppcm
 
 
 gst-launch -v rtpbin name=rtpbin udpsrc caps="application/x-rtp,media=(string)audio,clock-rate=(int)8000,encoding-params=(string)1,octet-align=(string)1" port=5002 ! rtpbin.recv_rtp_sink_1 rtpbin. ! rtppcmudepay ! mulawdec ! osxaudiosink udpsrc port=5003 ! rtpbin.recv_rtcp_sink_1 rtpbin.send_rtcp_src_1 ! udpsink port=5007 sync=false async=false
+
+
+*** IMPORTANT NOTE ***
+gcc -Wall server-alsasrc-PCMA.c -o server $(pkg-config --cflags --libs gstreamer-1.0) -lgstnet-1.0
+
+must use -lgstnet-1.0 in order to link the net libraries in `#include <gst/net/*>`

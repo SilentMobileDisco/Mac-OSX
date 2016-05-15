@@ -21,6 +21,7 @@
 #include <math.h>
 
 #include <gst/gst.h>
+#include <gst/net/gstnet.h>
 
 /*
  * A simple RTP receiver 
@@ -54,8 +55,17 @@
  * is used to send back the RTCP reports of this receiver. If the data is sent
  * from another machine, change this address. */
 #define DEST_HOST "127.0.0.1"
+#define PLAYBACK_DELAY_MS 40
 
 #define MULTICAST_ADDR "239.255.42.99"
+
+// For the clock
+static void
+source_created (GstElement * pipe, GstElement * source)
+{
+  g_object_set (source, "latency", PLAYBACK_DELAY_MS,
+      "ntp-time-source", 3, "buffer-mode", 4, "ntp-sync", TRUE, NULL);
+}
 
 /* print the stats of a source */
 static void
@@ -136,12 +146,27 @@ main (int argc, char *argv[])
   GstPadLinkReturn lres;
   GstPad *srcpad, *sinkpad;
 
+  GstClock *net_clock;
+
+
   /* always init first */
   gst_init (&argc, &argv);
 
+  net_clock = gst_net_client_clock_new ("net_clock", "0.0.0.0", 8554, 0);
+  if (net_clock == NULL) {
+    g_print ("Failed to create net clock client");
+    return 1;
+  }
+
+  /* Wait for the clock to stabilise */
+  gst_clock_wait_for_sync (net_clock, GST_CLOCK_TIME_NONE);
   /* the pipeline to hold everything */
   pipeline = gst_pipeline_new (NULL);
   g_assert (pipeline);
+
+  g_signal_connect (pipeline, "source-setup", G_CALLBACK (source_created), NULL);
+  gst_pipeline_use_clock (GST_PIPELINE (pipeline), net_clock);
+
 
   /* the udp src and source we will use for RTP and RTCP */
   rtpsrc = gst_element_factory_make ("udpsrc", "rtpsrc");

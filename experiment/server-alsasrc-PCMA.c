@@ -21,6 +21,9 @@
  * with newer GLib versions (>= 2.31.0) */
 #define GLIB_DISABLE_DEPRECATION_WARNINGS
 
+
+#include <gst/net/gstnet.h>
+#include <gst/net/gstnettimeprovider.h>
 #include <string.h>
 #include <math.h>
 
@@ -59,6 +62,8 @@
 /* the encoder and payloader elements */
 #define AUDIO_ENC  "alawenc"
 #define AUDIO_PAY  "rtppcmapay"
+
+GstClock *global_clock;
 
 /* print the stats of a source */
 static void
@@ -232,6 +237,13 @@ main (int argc, char *argv[])
     
     /* we need to run a GLib main loop to get the messages */
     loop = g_main_loop_new (NULL, FALSE);
+
+    /* Set the clock for the pipeline */ 
+    global_clock = gst_system_clock_obtain ();
+    gst_net_time_provider_new (global_clock, "0.0.0.0", 8554);
+    gst_pipeline_set_clock((GstPipeline *) pipeline, global_clock); 
+
+    // Run the loop
     g_main_loop_run (loop);
     
     g_print ("stopping sender pipeline\n");
