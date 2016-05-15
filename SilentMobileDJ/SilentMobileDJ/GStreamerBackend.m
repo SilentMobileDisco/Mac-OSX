@@ -23,8 +23,8 @@ GST_DEBUG_CATEGORY_STATIC (debug_category);
 /* #define AUDIO_SRC  "alsasrc" */
 // ASOURCE="filesrc location=/Users/oberkowitz/Lofticries.mp3 ! mpegaudioparse ! mad ! audioconvert ! audioresample"
 
-#define AUDIO_SRC  "audiotestsrc"
-//#define AUDIO_SRC  "filesrc"
+//#define AUDIO_SRC  "audiotestsrc"
+#define AUDIO_SRC  "filesrc"
 
 /* the encoder and payloader elements */
 #define AUDIO_ENC  "alawenc"
@@ -219,21 +219,23 @@ print_stats (GstElement * rtpbin)
     GMainLoop *loop;
     GstPad *srcpad, *sinkpad;
     
+    /* always init first */
+    
     /* the pipeline to hold everything */
     pipeline = gst_pipeline_new (NULL);
     g_assert (pipeline);
     
     /* the audio capture and format conversion */
-    audiosrc = gst_element_factory_make ("audiotestsrc", "audiosrc");
+    audiosrc = gst_element_factory_make (AUDIO_SRC, "audiosrc");
     // For filesrc, set the location:
-    //    g_object_set(audiosrc, "location", "/Users/oberkowitz/Lofticries.mp3", NULL);
+    g_object_set(audiosrc, "location", "/Users/oberkowitz/Lofticries.mp3", NULL);
     g_assert (audiosrc);
     
     // MP3 stuff, comment out if you aren't using mp3
-    //    mpegparse = gst_element_factory_make("mpegaudioparse", "mpegparse");
-    //    g_assert(mpegparse);
-    //    mad = gst_element_factory_make("mad", "mad");
-    //    g_assert(mad);
+    mpegparse = gst_element_factory_make("mpegaudioparse", "mpegparse");
+    g_assert(mpegparse);
+    mad = gst_element_factory_make("mad", "mad");
+    g_assert(mad);
     
     audioconv = gst_element_factory_make ("audioconvert", "audioconv");
     g_assert (audioconv);
@@ -313,7 +315,7 @@ print_stats (GstElement * rtpbin)
     
     /* set the pipeline to playing */
     g_print ("starting sender pipeline\n");
-    //    gst_element_set_state (pipeline, GST_STATE_PLAYING);
+    gst_element_set_state (pipeline, GST_STATE_PLAYING);
     
     /* print stats every second */
     g_timeout_add_seconds (1, (GSourceFunc) print_stats, rtpbin);
@@ -331,6 +333,7 @@ print_stats (GstElement * rtpbin)
     
     g_print ("stopping sender pipeline\n");
     gst_element_set_state (pipeline, GST_STATE_NULL);
+    
     
 }
 //-(void) app_function_orig

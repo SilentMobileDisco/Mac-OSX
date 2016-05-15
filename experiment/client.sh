@@ -34,7 +34,7 @@ AUDIO_SINK="audioconvert ! audioresample ! autoaudiosink"
 DEST=239.255.42.99
 
 gst-launch-1.0 -v --gst-debug-level=2 rtpbin name=rtpbin                                                \
-	   udpsrc caps=$AUDIO_CAPS auto-multicast=true uri=udp://$DEST:5002 multicast-iface="en0"  ! rtpbin.recv_rtp_sink_0              \
+	   udpsrc caps=$AUDIO_CAPS auto-multicast=true uri=udp://$DEST:5002 multicast-iface="en0" ! rtpjitterbuffer latency=40 ! rtpbin.recv_rtp_sink_0              \
 	         rtpbin. ! $AUDIO_DEC ! $AUDIO_SINK                                \
            udpsrc port=5003 ! rtpbin.recv_rtcp_sink_0                              \
          rtpbin.send_rtcp_src_0 ! udpsink port=5007 host=$DEST sync=false async=false

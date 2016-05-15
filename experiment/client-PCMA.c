@@ -59,13 +59,6 @@
 
 #define MULTICAST_ADDR "239.255.42.99"
 
-// For the clock
-static void
-source_created (GstElement * pipe, GstElement * source)
-{
-  g_object_set (source, "latency", PLAYBACK_DELAY_MS,
-      "ntp-time-source", 3, "buffer-mode", 4, "ntp-sync", TRUE, NULL);
-}
 
 /* print the stats of a source */
 static void
@@ -140,6 +133,7 @@ main (int argc, char *argv[])
   GstElement *rtpbin, *rtpsrc, *rtcpsrc, *rtcpsink;
   GstElement *audiodepay, *audiodec, *audiores, *audioconv, *audiosink;
   GstElement *pipeline;
+  GstElement *buffer;
   GMainLoop *loop;
   GstCaps *caps;
   gboolean res;
@@ -158,13 +152,15 @@ main (int argc, char *argv[])
     return 1;
   }
 
+  g_print("Waiting for network clock to synchronize");
   /* Wait for the clock to stabilise */
   gst_clock_wait_for_sync (net_clock, GST_CLOCK_TIME_NONE);
+  g_print("Clock synchronized!");
+
   /* the pipeline to hold everything */
   pipeline = gst_pipeline_new (NULL);
   g_assert (pipeline);
 
-  g_signal_connect (pipeline, "source-setup", G_CALLBACK (source_created), NULL);
   gst_pipeline_use_clock (GST_PIPELINE (pipeline), net_clock);
 
 
@@ -181,6 +177,11 @@ main (int argc, char *argv[])
   g_object_set (rtpsrc, "auto-multicast", TRUE, NULL);
 
   gst_caps_unref (caps);
+
+  /* Jitter buffer - it seems like while some networks don't need an additional jitter buffer here, some break without it.*/
+  buffer = gst_element_factory_make ("rtpjitterbuffer", "buffer");
+  g_assert(buffer);
+  g_object_set(buffer, "latency", PLAYBACK_DELAY_MS, NULL);
 
   rtcpsrc = gst_element_factory_make ("udpsrc", "rtcpsrc");
   g_assert (rtcpsrc);
@@ -217,12 +218,25 @@ main (int argc, char *argv[])
 
   /* the rtpbin element */
   rtpbin = gst_element_factory_make ("rtpbin", "rtpbin");
+  g_object_set (rtpbin, "latency", PLAYBACK_DELAY_MS,
+      "ntp-time-source", 3, "buffer-mode", 4, "ntp-sync", TRUE, NULL);
+
   g_assert (rtpbin);
 
   gst_bin_add (GST_BIN (pipeline), rtpbin);
+  gst_bin_add (GST_BIN (pipeline), buffer);
 
-  /* now link all to the rtpbin, start by getting an RTP sinkpad for session 0 */
+  // First: link rtpsrc to the buffer. Then link the buffer to the rtpbin
+
   srcpad = gst_element_get_static_pad (rtpsrc, "src");
+  sinkpad = gst_element_get_static_pad (buffer, "sink");
+  lres = gst_pad_link (srcpad, sinkpad);
+  g_assert (lres == GST_PAD_LINK_OK);
+  gst_object_unref (srcpad);
+  gst_object_unref (sinkpad);
+
+
+  srcpad = gst_element_get_static_pad (buffer, "src");
   sinkpad = gst_element_get_request_pad (rtpbin, "recv_rtp_sink_0");
   lres = gst_pad_link (srcpad, sinkpad);
   g_assert (lres == GST_PAD_LINK_OK);
