@@ -10,7 +10,8 @@
 
 @interface ViewController : NSViewController
 
-@property (weak) IBOutlet NSTextField *uri;
+@property (weak) IBOutlet NSTextField *name;
+@property (weak) IBOutlet NSTextField *message_label;
 
 - (IBAction) onPlay:(id) sender;
 

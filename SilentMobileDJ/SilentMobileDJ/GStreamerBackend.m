@@ -224,7 +224,7 @@ print_stats (GstElement * rtpbin)
     g_assert (pipeline);
     
     /* the audio capture and format conversion */
-    audiosrc = gst_element_factory_make ("filesrc", "audiosrc");
+    audiosrc = gst_element_factory_make ("audiotestsrc", "audiosrc");
     // For filesrc, set the location:
     //    g_object_set(audiosrc, "location", "/Users/oberkowitz/Lofticries.mp3", NULL);
     g_assert (audiosrc);

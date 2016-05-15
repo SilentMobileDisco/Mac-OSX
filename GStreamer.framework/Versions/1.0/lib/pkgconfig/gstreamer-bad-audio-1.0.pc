@@ -1,0 +1,13 @@
+prefix=/Library/Frameworks/GStreamer.framework/Versions/1.0
+exec_prefix=${prefix}
+libdir=/Library/Frameworks/GStreamer.framework/Versions/1.0/lib
+includedir=${prefix}/include/gstreamer-1.0
+pluginsdir=/Library/Frameworks/GStreamer.framework/Versions/1.0/lib/gstreamer-1.0
+
+Name: GStreamer bad audio library, uninstalled
+Description: Bad audio library for GStreamer elements, Not Installed
+Version: 1.8.1
+Requires: gstreamer-1.0 gstreamer-bad-base-1.0
+
+Libs: -L${libdir} ${libdir}/libgstbadaudio-1.0.la
+Cflags: -I${includedir}
