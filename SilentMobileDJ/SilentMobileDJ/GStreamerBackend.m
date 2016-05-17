@@ -23,8 +23,8 @@ GST_DEBUG_CATEGORY_STATIC (debug_category);
 /* #define AUDIO_SRC  "alsasrc" */
 // ASOURCE="filesrc location=/Users/oberkowitz/Lofticries.mp3 ! mpegaudioparse ! mad ! audioconvert ! audioresample"
 
-//#define AUDIO_SRC  "audiotestsrc"
-#define AUDIO_SRC  "filesrc"
+#define AUDIO_SRC  "audiotestsrc"
+//#define AUDIO_SRC  "filesrc"
 
 /* the encoder and payloader elements */
 #define AUDIO_ENC  "alawenc"
@@ -63,48 +63,6 @@ GST_DEBUG_CATEGORY_STATIC (debug_category);
     
     return self;
 }
-
-//static gboolean time_out (GstRTSPServer *server)
-//{
-//    GstRTSPSessionPool *pool;
-//
-//    pool = gst_rtsp_server_get_session_pool (server);
-//    gst_rtsp_session_pool_cleanup (pool);
-//    g_object_unref (pool);
-//
-//    return TRUE;
-//}
-
-//static void
-//media_constructed (GstRTSPMediaFactory * factory, GstRTSPMedia * media)
-//{
-//    guint i, n_streams;
-//
-//    n_streams = gst_rtsp_media_n_streams (media);
-//
-//    for (i = 0; i < n_streams; i++) {
-//        GstRTSPAddressPool *pool;
-//        GstRTSPStream *stream;
-//        gchar *min, *max;
-//
-//        stream = gst_rtsp_media_get_stream (media, i);
-//
-//        /* make a new address pool */
-//        pool = gst_rtsp_address_pool_new ();
-//
-//        min = g_strdup_printf ("224.3.0.%d", (2 * i) + 1);
-//        max = g_strdup_printf ("224.3.0.%d", (2 * i) + 2);
-//        gst_rtsp_address_pool_add_range (pool, min, max,
-//                                         5000 + (10 * i), 5010 + (10 * i), 1);
-//        g_free (min);
-//        g_free (max);
-//
-//        gst_rtsp_stream_set_address_pool (stream, pool);
-//        g_object_unref (pool);
-//    }
-//}
-
-
 
 -(void) dealloc
 {
@@ -228,14 +186,14 @@ print_stats (GstElement * rtpbin)
     /* the audio capture and format conversion */
     audiosrc = gst_element_factory_make (AUDIO_SRC, "audiosrc");
     // For filesrc, set the location:
-    g_object_set(audiosrc, "location", "/Users/oberkowitz/Lofticries.mp3", NULL);
+//    g_object_set(audiosrc, "location", "/Users/oberkowitz/Lofticries.mp3", NULL);
     g_assert (audiosrc);
     
     // MP3 stuff, comment out if you aren't using mp3
-    mpegparse = gst_element_factory_make("mpegaudioparse", "mpegparse");
-    g_assert(mpegparse);
-    mad = gst_element_factory_make("mad", "mad");
-    g_assert(mad);
+//    mpegparse = gst_element_factory_make("mpegaudioparse", "mpegparse");
+//    g_assert(mpegparse);
+//    mad = gst_element_factory_make("mad", "mad");
+//    g_assert(mad);
     
     audioconv = gst_element_factory_make ("audioconvert", "audioconv");
     g_assert (audioconv);
@@ -249,11 +207,11 @@ print_stats (GstElement * rtpbin)
     
     /* add capture and payloading to the pipeline and link */
     // MP3 add many line, comment this out if using an audio src element.
-    // gst_bin_add_many (GST_BIN (pipeline), audiosrc, audioconv, audiores, audioenc, audiopay, NULL);
-    gst_bin_add_many (GST_BIN (pipeline), audiosrc, mpegparse, mad, audioconv, audiores, audioenc, audiopay, NULL);
+     gst_bin_add_many (GST_BIN (pipeline), audiosrc, audioconv, audiores, audioenc, audiopay, NULL);
+//    gst_bin_add_many (GST_BIN (pipeline), audiosrc, mpegparse, mad, audioconv, audiores, audioenc, audiopay, NULL);
     
-    // if (!gst_element_link_many (audiosrc, audioconv, audiores, audioenc,
-    if (!gst_element_link_many (audiosrc, mpegparse, mad, audioconv, audiores, audioenc,
+     if (!gst_element_link_many (audiosrc, audioconv, audiores, audioenc,
+//    if (!gst_element_link_many (audiosrc, mpegparse, mad, audioconv, audiores, audioenc,
                                 audiopay, NULL)) {
         g_error ("Failed to link audiosrc, audioconv, audioresample, "
                  "audio encoder and audio payloader");
@@ -323,6 +281,8 @@ print_stats (GstElement * rtpbin)
     /* we need to run a GLib main loop to get the messages */
     loop = g_main_loop_new (NULL, FALSE);
     
+    [self getCaps];
+    
     /* Set the clock for the pipeline */
     global_clock = gst_system_clock_obtain ();
     gst_net_time_provider_new (global_clock, "0.0.0.0", 8554);
@@ -335,6 +295,27 @@ print_stats (GstElement * rtpbin)
     gst_element_set_state (pipeline, GST_STATE_NULL);
     
     
+}
+
+-(NSString *)getCaps
+{
+    GstPad *sinkpad;
+    GstElement *rtpsink;
+    GstCaps *caps;
+    guint size;
+    
+    rtpsink = gst_bin_get_by_name(GST_BIN (pipeline), "rtpsink");
+    sinkpad = gst_element_get_static_pad (rtpsink, "sink");
+    caps = gst_pad_get_allowed_caps(sinkpad);
+    
+    size = gst_caps_get_size(caps);
+    GstStructure *str = gst_caps_get_structure (caps, 0);
+
+    gst_object_unref(rtpsink);
+    gst_object_unref(sinkpad);
+    GValue *val  = gst_structure_get_value(str, "media");
+    NSString *value = [NSString stringWithUTF8String:g_value_get_string(val)];
+    return [NSString stringWithUTF8String:gst_caps_to_string(caps)];
 }
 //-(void) app_function_orig
 //

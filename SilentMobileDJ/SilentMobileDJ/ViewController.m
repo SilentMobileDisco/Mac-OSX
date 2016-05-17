@@ -38,46 +38,6 @@ GStreamerBackend *gst_backend;
     });
 }
 
-static gboolean time_out (GstRTSPServer *server)
-{
-    GstRTSPSessionPool *pool;
-    
-    pool = gst_rtsp_server_get_session_pool (server);
-    gst_rtsp_session_pool_cleanup (pool);
-    g_object_unref (pool);
-    
-    return TRUE;
-}
-
-static void
-media_constructed (GstRTSPMediaFactory * factory, GstRTSPMedia * media)
-{
-    guint i, n_streams;
-    
-    n_streams = gst_rtsp_media_n_streams (media);
-    
-    for (i = 0; i < n_streams; i++) {
-        GstRTSPAddressPool *pool;
-        GstRTSPStream *stream;
-        gchar *min, *max;
-        
-        stream = gst_rtsp_media_get_stream (media, i);
-        
-        /* make a new address pool */
-        pool = gst_rtsp_address_pool_new ();
-        
-        min = g_strdup_printf ("224.3.0.%d", (2 * i) + 1);
-        max = g_strdup_printf ("224.3.0.%d", (2 * i) + 2);
-        gst_rtsp_address_pool_add_range (pool, min, max,
-                                         5000 + (10 * i), 5010 + (10 * i), 1);
-        g_free (min);
-        g_free (max);
-        
-        gst_rtsp_stream_set_address_pool (stream, pool);
-        g_object_unref (pool);
-    }
-}
-
 - (void) gstPlay:(NSString *) name
 {
     [gst_backend play];
