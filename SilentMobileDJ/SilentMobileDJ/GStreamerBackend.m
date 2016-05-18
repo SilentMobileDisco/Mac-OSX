@@ -23,8 +23,8 @@ GST_DEBUG_CATEGORY_STATIC (debug_category);
 /* #define AUDIO_SRC  "alsasrc" */
 // ASOURCE="filesrc location=/Users/oberkowitz/Lofticries.mp3 ! mpegaudioparse ! mad ! audioconvert ! audioresample"
 
-#define AUDIO_SRC  "audiotestsrc"
-//#define AUDIO_SRC  "filesrc"
+//#define AUDIO_SRC  "audiotestsrc"
+#define AUDIO_SRC  "filesrc"
 
 /* the encoder and payloader elements */
 #define AUDIO_ENC  "alawenc"
@@ -37,8 +37,7 @@ GST_DEBUG_CATEGORY_STATIC (debug_category);
     GMainContext *context; /* GLib context used to run the main loop */
     GMainLoop *main_loop;  /* GLib main loop */
     gboolean initialized;  /* To avoid informing the UI multiple times about the initialization */
-    GstClock *global_clock;/* The Clock exported on the network for synchronization */
-    
+    GstClock *client_clock;/* The Clock exported on the network for synchronization */
 }
 
 /*
@@ -168,6 +167,27 @@ print_stats (GstElement * rtpbin)
     }
 }
 
+static GstNetTimeProvider *
+create_net_clock ()
+{
+    GstClock *clock;
+    GstNetTimeProvider *net_time;
+    
+    clock = gst_system_clock_obtain ();
+    net_time = gst_net_time_provider_new (clock, NULL, 8554);
+    gst_object_unref (clock);
+    
+    return net_time;
+}
+
+-(guint64) getBaseTimeFromClockProvider:(GstNetTimeProvider *)prov_clock {
+    GstClock *clock;
+    GstClockTime time;
+    g_object_get (prov_clock, "clock", &clock, NULL);
+    time = gst_clock_get_time (clock);
+    return time;
+}
+
 /* Main method for the bus monitoring code */
 -(void) app_function
 {
@@ -176,24 +196,35 @@ print_stats (GstElement * rtpbin)
     GstElement *rtpbin, *rtpsink, *rtcpsink, *rtcpsrc;
     GMainLoop *loop;
     GstPad *srcpad, *sinkpad;
-    
-    /* always init first */
+    GstNetTimeProvider *prov_clock;
     
     /* the pipeline to hold everything */
     pipeline = gst_pipeline_new (NULL);
     g_assert (pipeline);
     
+    prov_clock = create_net_clock();
+    client_clock = gst_net_client_clock_new (NULL, "127.0.0.1", 8554, 0);
+
+    
+    gst_pipeline_set_clock((GstPipeline *) pipeline, client_clock);
+    g_print("Waiting for network clock to synchronize");
+    /* Wait for the clock to stabilise */
+    gst_clock_wait_for_sync (client_clock, GST_CLOCK_TIME_NONE);
+    g_print("Clock synchronized!");
+
+    self.base_time = (NSUInteger) [self getBaseTimeFromClockProvider:prov_clock];
+    
     /* the audio capture and format conversion */
     audiosrc = gst_element_factory_make (AUDIO_SRC, "audiosrc");
     // For filesrc, set the location:
-//    g_object_set(audiosrc, "location", "/Users/oberkowitz/Lofticries.mp3", NULL);
+    g_object_set(audiosrc, "location", "/Users/oberkowitz/Lofticries.mp3", NULL);
     g_assert (audiosrc);
     
     // MP3 stuff, comment out if you aren't using mp3
-//    mpegparse = gst_element_factory_make("mpegaudioparse", "mpegparse");
-//    g_assert(mpegparse);
-//    mad = gst_element_factory_make("mad", "mad");
-//    g_assert(mad);
+    mpegparse = gst_element_factory_make("mpegaudioparse", "mpegparse");
+    g_assert(mpegparse);
+    mad = gst_element_factory_make("mad", "mad");
+    g_assert(mad);
     
     audioconv = gst_element_factory_make ("audioconvert", "audioconv");
     g_assert (audioconv);
@@ -207,11 +238,11 @@ print_stats (GstElement * rtpbin)
     
     /* add capture and payloading to the pipeline and link */
     // MP3 add many line, comment this out if using an audio src element.
-     gst_bin_add_many (GST_BIN (pipeline), audiosrc, audioconv, audiores, audioenc, audiopay, NULL);
-//    gst_bin_add_many (GST_BIN (pipeline), audiosrc, mpegparse, mad, audioconv, audiores, audioenc, audiopay, NULL);
+//     gst_bin_add_many (GST_BIN (pipeline), audiosrc, audioconv, audiores, audioenc, audiopay, NULL);
+    gst_bin_add_many (GST_BIN (pipeline), audiosrc, mpegparse, mad, audioconv, audiores, audioenc, audiopay, NULL);
     
-     if (!gst_element_link_many (audiosrc, audioconv, audiores, audioenc,
-//    if (!gst_element_link_many (audiosrc, mpegparse, mad, audioconv, audiores, audioenc,
+//     if (!gst_element_link_many (audiosrc, audioconv, audiores, audioenc,
+    if (!gst_element_link_many (audiosrc, mpegparse, mad, audioconv, audiores, audioenc,
                                 audiopay, NULL)) {
         g_error ("Failed to link audiosrc, audioconv, audioresample, "
                  "audio encoder and audio payloader");
@@ -273,20 +304,16 @@ print_stats (GstElement * rtpbin)
     
     /* set the pipeline to playing */
     g_print ("starting sender pipeline\n");
-    gst_element_set_state (pipeline, GST_STATE_PLAYING);
+    gst_element_set_state (pipeline, GST_STATE_READY);
     
     /* print stats every second */
-    g_timeout_add_seconds (1, (GSourceFunc) print_stats, rtpbin);
+//    g_timeout_add_seconds (1, (GSourceFunc) print_stats, rtpbin);
     
     /* we need to run a GLib main loop to get the messages */
     loop = g_main_loop_new (NULL, FALSE);
     
     [self getCaps];
     
-    /* Set the clock for the pipeline */
-    global_clock = gst_system_clock_obtain ();
-    gst_net_time_provider_new (global_clock, "0.0.0.0", 8554);
-    gst_pipeline_set_clock((GstPipeline *) pipeline, global_clock);
     
     // Run the loop
     g_main_loop_run (loop);
@@ -306,82 +333,19 @@ print_stats (GstElement * rtpbin)
     
     rtpsink = gst_bin_get_by_name(GST_BIN (pipeline), "rtpsink");
     sinkpad = gst_element_get_static_pad (rtpsink, "sink");
-    caps = gst_pad_get_allowed_caps(sinkpad);
+    caps = gst_pad_get_current_caps(sinkpad);
     
     size = gst_caps_get_size(caps);
     GstStructure *str = gst_caps_get_structure (caps, 0);
 
-    gst_object_unref(rtpsink);
-    gst_object_unref(sinkpad);
-    GValue *val  = gst_structure_get_value(str, "media");
-    NSString *value = [NSString stringWithUTF8String:g_value_get_string(val)];
+    NSString *string_caps = [NSString stringWithUTF8String:gst_caps_to_string(caps)];
+//    NSLog(string_caps);
+//    gst_object_unref(rtpsink);
+//    gst_object_unref(sinkpad);
+//    GValue *val  = gst_structure_get_value(str, "media");
+//    NSString *value = [NSString stringWithUTF8String:g_value_get_string(val)];
     return [NSString stringWithUTF8String:gst_caps_to_string(caps)];
 }
-//-(void) app_function_orig
-//
-//{
-//    GMainLoop *loop;
-//    GstRTSPServer *server;
-//    GstRTSPMountPoints *mounts;
-//    GstRTSPMediaFactory *factory;
-//    gchar *str;
-//
-//
-//    loop = g_main_loop_new (NULL, FALSE);
-//
-//    /* create a server instance */
-//    server = gst_rtsp_server_new ();
-//
-//    /* get the mount points for this server, every server has a default object
-//     * that be used to map uri mount points to media factories */
-//    mounts = gst_rtsp_server_get_mount_points (server);
-//
-//    factory = gst_rtsp_media_factory_new ();
-//    str = g_strdup_printf ("( "
-//                           //                                 "filesrc location=\"%s\" ! mpegaudioparse ! queue ! rtpmpapay pt=96 name=pay0 " ")", argv[1]);
-//                           "jackaudiosrc ! audioconvert ! audioresample ! alawenc ! rtppcmapay pt=96 name=pay0 " ")");
-//
-//    gst_rtsp_media_factory_set_launch (factory, str);
-//
-//    gst_rtsp_media_factory_set_latency(factory, 25);
-//    gst_rtsp_media_factory_set_shared (factory, TRUE);
-//
-//    g_signal_connect (factory, "media-constructed", (GCallback)
-//                      media_constructed, NULL);
-//
-//    //    g_signal_connect (G_OBJECT (bus), "message::error", (GCallback)error_cb, (__bridge void *)self);
-//
-//    /* attach the test factory to the /test url */
-//    gst_rtsp_mount_points_add_factory (mounts, "/disco", factory);
-//
-//    /* don't need the ref to the mapper anymore */
-//    g_object_unref (mounts);
-//
-//    /* attach the server to the default maincontext */
-//    if (gst_rtsp_server_attach (server, NULL) == 0)
-//        return;
-//
-//    g_timeout_add_seconds (2, (GSourceFunc) time_out, server);
-//
-//    /* start serving */
-////    [self check_initialization_complete_with_ip:@"127.0.0.1" port:@"8554"];
-//    [self setUIMessage:"starting the server"];
-//    g_print ("stream ready at rtsp://127.0.0.1:8554/disco\n");
-//    g_main_loop_run (loop);
-//    GST_DEBUG ("Exited main loop");
-//    g_main_loop_unref (main_loop);
-//    main_loop = NULL;
-//
-//    /* Free resources */
-//    g_main_context_pop_thread_default(context);
-//    g_main_context_unref (context);
-//    gst_element_set_state (pipeline, GST_STATE_NULL);
-//    gst_object_unref (pipeline);
-//
-//    return;
-//
-//
-//}
 
 @end
 

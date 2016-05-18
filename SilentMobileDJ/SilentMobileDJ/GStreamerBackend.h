@@ -13,4 +13,7 @@
 /* Set the pipeline to PAUSED */
 -(void) pause;
 
+-(NSString *)getCaps;
+
+@property NSUInteger base_time;
 @end

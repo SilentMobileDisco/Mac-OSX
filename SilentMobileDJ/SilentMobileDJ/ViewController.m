@@ -32,7 +32,7 @@ GStreamerBackend *gst_backend;
 {
     
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self startBroadcast:[_name stringValue]];
+        [self startBroadcastWithName:[_name stringValue] baseTime:gst_backend.base_time];
         
         [self gstPlay:[_name stringValue]];
     });
@@ -45,10 +45,14 @@ GStreamerBackend *gst_backend;
 
 #pragma mark -
 #pragma mark Helper Methods
-- (void)startBroadcast: (NSString*)name {
+- (void)startBroadcastWithName:(NSString*)name baseTime:(NSUInteger)baseTime {
     
     // Initialize Service
     self.service = [[NSNetService alloc] initWithDomain:@"local." type:@"_silentmobiledisco._udp." name:name port:8554];
+
+    NSMutableDictionary* dic = [NSMutableDictionary dictionary];
+    [dic setValue:[gst_backend getCaps] forKey:@"caps"];
+    [self.service setTXTRecordData:[NSNetService dataFromTXTRecordDictionary:dic]];
     
     // Configure Service
     [self.service setDelegate:self];
